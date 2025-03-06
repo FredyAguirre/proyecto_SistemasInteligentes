@@ -74,6 +74,11 @@ def reemplazar_sinonimos(mensaje):
 def quitar_tildes(texto):
     return ''.join(c for c in unicodedata.normalize('NFD', texto) if unicodedata.category(c) != 'Mn')
 
+def mostrar_menu():
+    print("\n🍽️ Menú disponible:")
+    for categoria, opciones in menu.items():
+        print(f"{categoria.capitalize()}: {', '.join(opciones)}")
+
 #funcion para procesar la entrada del usuario y extraer el pedido con cantidad
 def procesar_mensaje(mensaje):
     mensaje= quitar_tildes(mensaje)
@@ -188,27 +193,31 @@ def editar_pedido(pedido_actual):
 #funciones del bot
 def chatbot():
     print("🍽️¡Bienvenido a MiMenú Chatbot! Escribe 'salir' para terminar.\n")
-    pedido_actual={}
+    
+    # Mostrar el menú después de la bienvenida
+    mostrar_menu()
+    
+    pedido_actual = {}
     while True:
         mensaje = input("Tú: ").lower()
-        if mensaje== "salir":
+        if mensaje == "salir":
             print("🤖 Chatbot: ¡Hasta luego! 👋")
             break
-        pedido =procesar_mensaje(mensaje)
+        pedido = procesar_mensaje(mensaje)
         if pedido:
             for item, cantidad in pedido.items():
                 if item in pedido_actual:
-                    pedido_actual[item]+=cantidad
+                    pedido_actual[item] += cantidad
                 else:
-                    pedido_actual[item]=cantidad
+                    pedido_actual[item] = cantidad
             pedido_str = ", ".join(
-                [f"{categoria} {opcion} (x{cantidad})" for (categoria,opcion), cantidad in pedido_actual.items()]
+                [f"{categoria} {opcion} (x{cantidad})" for (categoria, opcion), cantidad in pedido_actual.items()]
             )
             print(f"🤖 Chatbot: {random.choice(frases_pedido).format(pedido_str)}")
         else:
             print("🤖 Chatbot: No entendí bien, ¿puedes repetirlo de otra manera?")
             continue
-        print(f"🤖 Chatbot: {random.choice(frases_confirmacion)} (si/no)")#confirmacion
+        print(f"🤖 Chatbot: {random.choice(frases_confirmacion)} (si/no)")  # confirmacion
         mensaje = input("Tú: ").lower()
         if mensaje not in ["si", "claro", "por supuesto"]:
             break
@@ -224,7 +233,7 @@ def chatbot():
                 break
             elif confirmar == "editar":
                 editar_pedido(pedido_actual)
-            elif confirmar =="no":
+            elif confirmar == "no":
                 print("🤖 Chatbot: Pedido cancelado")
                 break
             else:
